@@ -9,17 +9,17 @@ FPS = 60  # les fps tabernak
 WIND = 750 # dimentions de la fentere
 size=10 # la taille de la map
 shadow=10 # l'assombirssemnt à distance
-main_coul=random.random() # la couleur principale (hue)
+main_coul=random.random() # la couleur principale (hue) de 0 à 1
 agl=90 #L'ouverture de l'oeil
 speed=0.1 # La vitesse de déplacement
 
-def sgt(x1,y1,yp1,couleure=(255,255,255)):
+def sgt(x1,y1,yp1,couleure=0xffffff):
     """tracer un segment vertical"""
     pg.draw.line(f,couleure,
                  (x1*WIND,(up+0.5-y1)*WIND),
                  (x1*WIND,(up+0.5-yp1)*WIND),
                  5)
-# Génération de la map
+#--- Génération de la map
 carte:list=[]
 for y in range(size):
     carte.append([])
@@ -72,10 +72,10 @@ for i in range(len(carte)):
             
 posx,posy=1.5,1.5 #Position initiale du joueur
 pg.init()
-f=pg.display.set_mode(size=(WIND*2, WIND))
+f=pg.display.set_mode((WIND*2, WIND),pg.RESIZABLE)
 pg.display.set_caption("3D maze mdrs")
 horloge = pg.time.Clock() #Pour gérer les FPS
-font = pg.font.Font('../consolas.ttf', 30) # Charger la police d'écriture
+font = pg.font.SysFont('consolas',30) # Charger la police d'écriture
 look=math.pi/4 # Le regard horizontal
 
 viz=WIND/size # Zoom sur l'apreçu de map
@@ -110,11 +110,11 @@ try:
             pg.draw.line(f,(t,t,t),(0,j),(WIND,j))
 
         rays=[] # Les rayons de vue
-        for i in range((agl+1)*2):
+        for i in range(0,(agl+1)*2,2):
             i=i/2
-            balyeur=look+math.radians(i-agl/2)
+            balyeur=look+math.radians(i-agl/4)
             x,y=posx,posy
-            sin,cos=math.sin(balyeur)/50,math.cos(balyeur)/50
+            sin,cos=math.sin(balyeur)/10,math.cos(balyeur)/10
             n=0
             while int(x)<len(carte) and int(y)<len(carte[0]) and carte[int(x)][int(y)]==0:
                 x+=cos
@@ -129,7 +129,7 @@ try:
                 midy=y
             d=math.sqrt((posx-midx)**2+(posy-midy)**2)
             rays.append((x,y,d))
-            h=10/(n*math.cos(balyeur-look))
+            h=1/(n*math.cos(balyeur-look))
 
             if int(x)<len(carte) and int(y)<len(carte[0]) and carte[int(x)][int(y)]!=0:
                 hue=carte[int(x)][int(y)]
@@ -165,8 +165,8 @@ try:
                 else:
                     pg.draw.circle(f,(255,255,255),(WIND+indx*viz,indy*viz),2)
             pg.draw.circle(f,(255,255,255),(WIND+posx*viz,posy*viz),5)
-            for ray in rays:
-                pg.draw.line(f,hsv_to_rgb(main_coul,0.5,200),(WIND+posx*viz,posy*viz),(WIND+ray[0]*viz,ray[1]*viz))
+            """for ray in rays:
+                pg.draw.line(f,hsv_to_rgb(main_coul,0.5,200),(WIND+posx*viz,posy*viz),(WIND+ray[0]*viz,ray[1]*viz))"""
             pg.draw.line(f,hsv_to_rgb(1-hue,0.5,255),(WIND+vizx*viz,vizy*viz),(WIND+posx*viz,posy*viz))
         if carte[int(midx)][int(midy)]==0:
             carte[antesx][antesy]=main_coul
