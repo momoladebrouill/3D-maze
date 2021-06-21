@@ -9,6 +9,7 @@ f=pg.display.set_mode((500,500),pg.RESIZABLE)
 
 fps=pg.time.Clock()
 B=1
+rays=[]
 carte=[[1 for i in range(10)]]+[[1]+[0 for i in range(8)]+[1] for j in range(8)]+[[1 for i in range(10)]]
 pos=[5,5]
 fpos=pos[:]
@@ -16,9 +17,8 @@ moving=[0,0]
 decal=0
 fpsmode=False
 ouverture=math.tau/8
-precision=50 #-- précision pour trouver le point de contact au mur à 1/precision près
-def scale(truc):
-    return truc[0]*coef,truc[1]*coef
+precision=50 #-- précision pour trouver le point de contact au mur à 1/precision près mais aussi nombre de lignes
+scale=lambda truc:(truc[0]*coef,truc[1]*coef)
 while B:
     fps.tick(60)
     pg.display.flip()
@@ -33,11 +33,12 @@ while B:
         indy+=1
         indx=0
     
-    rays=[]
+   
+    
     if not fpsmode:
         decal=pg.mouse.get_pos()
         decal=math.atan2(decal[1]/coef-pos[1],decal[0]/coef-pos[0])-ouverture/2
-    
+    rays=[]
     for i in range(precision):
         ray=decal+i*ouverture/precision
         rpos=pos[:]
@@ -53,7 +54,8 @@ while B:
     ind=0
     for ray in rays:
         tt=[int((1-ray[2]/15)*0xff) for _ in range(3)]
-        haut=ray[2]/15*wind[1]#*math.cos(ind/len(rays)*ouverture)
+        haut=ray[2]/30*wind[1] # longueur sur longuer maxi x hauteur maxi
+        #haut=ray[2]*math.sin(decal+math.atan2(pos[1]-ray[1],pos[0]-ray[0]))*wind[1]
         pg.draw.rect(f,tt,
                 (min(wind)+ind/len(rays)*(max(wind)-min(wind)), # x
                 haut, # y
@@ -61,8 +63,13 @@ while B:
                 wind[1]-haut*2     # hauteur
                 ))
         ind+=1
-    pg.draw.polygon(f,0xaaaaaa,[scale(i) for i in rays+[pos]])
+    pg.draw.polygon(f,0x555555,[scale(i) for i in rays+[pos]])
+    if fpsmode:
+        rayon=rays[len(rays)//2]
+        pg.draw.rect(f,0xffff00,(int(rayon[0])*coef,int(rayon[1])*coef,coef,coef))
+        pg.draw.rect(f,0xffff00,(int(rayon[0]+math.cos(rayon[3]))*coef,int(rayon[1]+math.sin(rayon[3]))*coef,coef,coef),5)
     pg.draw.circle(f,0xff0000,(pos[0]*coef,pos[1]*coef),coef/4)
+
     if moving:
         fpos[0]+=moving[0]/10
         if carte[int(fpos[1])][int(fpos[0])]:
