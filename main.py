@@ -137,9 +137,8 @@ try:
                     sgt(i/agl,h,-h,(255,255,255))
                 else:
                     if hue==1-main_coul:
-                        pass
-                        #sgt(i/agl,h,-h,hsv_to_rgb(hue,(math.cos(val)+1)/2,255-d*shadow))
-                        #print('hallah')
+                        sgt(i/agl,h,-h,hsv_to_rgb(hue,(math.cos(val)+1)/2,255-d*shadow))
+                        print('hallah')
                     else:
                         if i==int((agl+1)/2):
                             sgt(i/agl,h,-h,hsv_to_rgb(1-hue,1,255-d*shadow))
@@ -169,15 +168,14 @@ try:
                 pg.draw.line(f,hsv_to_rgb(main_coul,0.5,200),(WIND+posx*viz,posy*viz),(WIND+ray[0]*viz,ray[1]*viz))"""
             pg.draw.line(f,hsv_to_rgb(1-hue,0.5,255),(WIND+vizx*viz,vizy*viz),(WIND+posx*viz,posy*viz))
         if carte[int(midx)][int(midy)]==0:
-            carte[antesx][antesy]=main_coul
-            carte[int(midx)][int(midy)]=1-main_coul
+            
             antesx,antesy=int(midx),int(midy)
             
         if p[pg.K_d]:look+=math.pi/128
-        elif p[pg.K_q]:look-=math.pi/128
-        elif p[pg.K_a]:up+=1/100
-        elif p[pg.K_w]:up-=1/100
-        elif p[pg.K_z]:
+        if p[pg.K_q]:look-=math.pi/128
+        if p[pg.K_a]:up+=1/500
+        if p[pg.K_w]:up-=1/500
+        if p[pg.K_z]:
             posx+=math.cos(look)*speed
             posy+=math.sin(look)*speed
         elif p[pg.K_s]:
@@ -198,7 +196,7 @@ try:
                 print("Fin du jeu  babe")
                 
             elif event.type == pg.KEYUP:
-                if event.dict['key']==pg.K_ESCAPE:
+                if event.key==pg.K_ESCAPE:
                     accro=False
                     pg.mouse.set_visible(True)   
             elif event.type==pg.MOUSEBUTTONUP:
