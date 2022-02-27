@@ -4,9 +4,9 @@ import math
 from pygame import event
 
 pg.init()
-wind=[500,500]
-f=pg.display.set_mode((500,500),pg.RESIZABLE)
-
+wind=[1000,500]
+f=pg.display.set_mode((1000,500),pg.RESIZABLE)
+pg.display.set_caption("Not doom")
 fps=pg.time.Clock()
 B=1
 rays=[]
@@ -55,7 +55,7 @@ while B:
     for ray in rays:
         tt=[int((1-ray[2]/15)*0xff) for _ in range(3)]
         haut=ray[2]/30*wind[1] # longueur sur longuer maxi x hauteur maxi
-        haut=ray[2]*math.sin(decal+math.atan2(pos[1]-ray[1],pos[0]-ray[0]))/wind[1]
+        #haut=ray[2]*math.sin(decal+math.atan2(pos[1]-ray[1],pos[0]-ray[0]))/wind[1]
         pg.draw.rect(f,tt,
                 (min(wind)+ind/len(rays)*(max(wind)-min(wind)), # x
                 haut, # y
